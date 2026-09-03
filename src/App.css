@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+:root {
+  --neon-purple: #8B5CF6;
+  --neon-yellow: #FCD34D;
+  --neon-orange: #FB923C;
+  --neon-red: #EF4444;
+  --neon-green: #34D399;
+  --glow-intensity: 20px;
+}
