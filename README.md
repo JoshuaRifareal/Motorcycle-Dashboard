@@ -2,7 +2,7 @@
 
 A modern, responsive speedometer PWA built with React, Vite, and SVG. Features GPS tracking, fuel consumption calculation, and a cyberpunk neon aesthetic.
 
-![Navi Dash Screenshot](screenshot.png)
+![Try here](https://motorcycle-dashboard-eta.vercel.app/)
 
 ## Features
 
@@ -26,7 +26,7 @@ A modern, responsive speedometer PWA built with React, Vite, and SVG. Features G
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/navi-dash.git
+https://github.com/JoshuaRifareal/Motorcycle-Dashboard.git
 
 # Install dependencies
 npm install
