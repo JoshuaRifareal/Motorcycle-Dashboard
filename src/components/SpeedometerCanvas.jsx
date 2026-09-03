@@ -3,10 +3,10 @@ import { Fuel } from 'lucide-react';
 import './SpeedometerCanvas.css';
 
 const SPEED_GRADIENT = [
-  { offset: '0%', color: '#b388ff' },
-  { offset: '30%', color: '#b388ff' },
-  { offset: '45%', color: '#ffd740' },
-  { offset: '65%', color: '#ff9100' },
+  { offset: '0%', color: '#7c4dff' },
+  { offset: '20%', color: '#b388ff' },
+  { offset: '40%', color: '#ffd740' },
+  { offset: '60%', color: '#ff9100' },
   { offset: '80%', color: '#ff1744' },
   { offset: '100%', color: '#d50000' }
 ];
@@ -19,28 +19,29 @@ const FUEL_GRADIENT = [
 ];
 
 function SpeedometerCanvas({ speed, fuel, odometer, isRunning }) {
-  // Use viewBox that matches the arc proportions
-  const viewBoxWidth = 1200;
-  const viewBoxHeight = 700;
+  // Wider viewBox with more horizontal space
+  const viewBoxWidth = 1400;  // Increased from 1200
+  const viewBoxHeight = 700;  // Same height
+  
+  const paddingX = 20;  // Minimal horizontal padding
+  const paddingY = 60;
   
   const cx = viewBoxWidth / 2;
   const cy = viewBoxHeight * 0.78;
   
-  // Calculate radius to fill width, but cap height
-  const maxRadiusX = viewBoxWidth * 0.46;
-  const maxRadiusY = viewBoxHeight * 0.42;
+  // Radius based on width with minimal padding
+  const maxRadiusX = (viewBoxWidth / 2) - paddingX;
+  const maxRadiusY = (viewBoxHeight * 0.45) - paddingY;
   
-  // Allow the arc to stretch horizontally - radius is based on width
-  // but we limit how tall it can get
-  const radius = Math.max(maxRadiusX, maxRadiusY * 1.8);
+  const radius = Math.min(maxRadiusX, maxRadiusY * 2.0); // More width-focused
   
-  const lineWidth = 32;
+  const lineWidth = 38;
   const fuelRadius = radius * 0.58;
-  const fuelLineWidth = 18;
+  const fuelLineWidth = 20;
 
-  // Arc angles - wider arc to fill width (170 degrees)
-  const startAngle = 185;
-  const endAngle = 355;
+  // Wider arc - 180 degrees (half circle)
+  const startAngle = 180;
+  const endAngle = 360;
   const totalAngle = endAngle - startAngle;
 
   // Fuel offset - 15px gap
@@ -112,7 +113,6 @@ function SpeedometerCanvas({ speed, fuel, odometer, isRunning }) {
   if (fuel < 30) fuelColor = '#ff1744';
   else if (fuel < 60) fuelColor = '#ff9100';
 
-  // Calculate baseline position (bottom of the arcs)
   const baselineY = cy + radius * 0.12;
 
   return (
@@ -135,13 +135,7 @@ function SpeedometerCanvas({ speed, fuel, odometer, isRunning }) {
             ))}
           </linearGradient>
 
-          <filter 
-            id="glow" 
-            x="-50%" 
-            y="-50%" 
-            width="200%" 
-            height="200%"
-          >
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
             <feMerge>
               <feMergeNode in="coloredBlur"/>
@@ -149,13 +143,7 @@ function SpeedometerCanvas({ speed, fuel, odometer, isRunning }) {
             </feMerge>
           </filter>
 
-          <filter 
-            id="speedGlow" 
-            x="-100%" 
-            y="-100%" 
-            width="300%" 
-            height="300%"
-          >
+          <filter id="speedGlow" x="-100%" y="-100%" width="300%" height="300%">
             <feGaussianBlur stdDeviation="20" result="blur1"/>
             <feGaussianBlur stdDeviation="40" result="blur2"/>
             <feMerge>
@@ -228,7 +216,7 @@ function SpeedometerCanvas({ speed, fuel, odometer, isRunning }) {
           );
         })}
 
-        {/* Odometer - at the top of the speed display */}
+        {/* Odometer */}
         <text
           x={cx}
           y={cy - 100}
@@ -243,7 +231,7 @@ function SpeedometerCanvas({ speed, fuel, odometer, isRunning }) {
           ODO {Math.round(odometer).toLocaleString()} km
         </text>
 
-        {/* Speed number - with enhanced glow */}
+        {/* Speed number */}
         <text
           x={cx}
           y={baselineY - 5}
@@ -261,7 +249,7 @@ function SpeedometerCanvas({ speed, fuel, odometer, isRunning }) {
           {Math.round(speed)}
         </text>
 
-        {/* KPH label - just below speed number */}
+        {/* KPH label */}
         <text
           x={cx}
           y={baselineY + 55}
@@ -297,29 +285,29 @@ function SpeedometerCanvas({ speed, fuel, odometer, isRunning }) {
           }}
         />
 
-        {/* Fuel label with Lucide React icon - centered alignment */}
-        <g transform={`translate(${cx - 55}, ${cy - fuelRadius + fuelLineWidth + 30})`}>
-        <Fuel 
+        {/* Fuel label */}
+        <g transform={`translate(${cx - 60}, ${cy - fuelRadius + fuelLineWidth + 30})`}>
+          <Fuel 
             size={24} 
             color="#ffffff" 
             strokeWidth={2}
             style={{ filter: `drop-shadow(0 0 15px ${fuelColor}44)` }}
-        />
-        <text
+          />
+          <text
             x={34}
-            y={0}
+            y={1}
             fill={fuelColor}
             fontSize="22"
             fontWeight="600"
             dominantBaseline="central"
             fontFamily="-apple-system, Segoe UI, sans-serif"
             style={{ filter: `drop-shadow(0 0 20px ${fuelColor}44)` }}
-        >
+          >
             {Math.round(fuel)}%
-        </text>
+          </text>
         </g>
 
-        {/* Subtle outer glow ring */}
+        {/* Outer glow ring */}
         <path
           d={getArcPath(startAngle, endAngle, radius + 6)}
           stroke="rgba(150,120,255,0.03)"

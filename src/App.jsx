@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, Satellite, RotateCcw, Coffee } from 'lucide-react';
 import Speedometer from './components/Speedometer';
 import SetupPanel from './components/SetupPanel';
 import './App.css';
@@ -90,8 +90,55 @@ function App() {
     }
   };
 
+  const toggleSimulation = () => {
+    setUseSimulation(!useSimulation);
+  };
+
+  const toggleLandscape = () => {
+    setForceLandscape(!forceLandscape);
+  };
+
+  const toggleScreenOn = () => {
+    setKeepScreenOn(!keepScreenOn);
+  };
+
   return (
     <div className="app">
+      {/* Top bar with glowing toggles */}
+      {isRunning && (
+        <div className="top-bar">
+          <div className="toggle-group">
+            <button 
+              className={`toggle-icon ${useSimulation ? 'active' : ''}`}
+              onClick={toggleSimulation}
+              title={useSimulation ? 'Simulation Mode' : 'GPS Mode'}
+            >
+              <Satellite size={24} />
+              <span className="led-indicator"></span>
+            </button>
+            <button 
+              className={`toggle-icon ${forceLandscape ? 'active' : ''}`}
+              onClick={toggleLandscape}
+              title={forceLandscape ? 'Landscape Locked' : 'Auto Rotate'}
+            >
+              <RotateCcw size={24} />
+              <span className="led-indicator"></span>
+            </button>
+            <button 
+              className={`toggle-icon ${keepScreenOn ? 'active' : ''}`}
+              onClick={toggleScreenOn}
+              title={keepScreenOn ? 'Screen Always On' : 'Screen Auto Sleep'}
+            >
+              <Coffee size={24} />
+              <span className="led-indicator"></span>
+            </button>
+          </div>
+          <button className="settings-btn" onClick={handleSettings}>
+            <Settings size={24} />
+          </button>
+        </div>
+      )}
+      
       <Speedometer
         isRunning={isRunning}
         fuel={fuel}
@@ -100,12 +147,6 @@ function App() {
         showStartupAnim={showStartupAnim}
         useSimulation={useSimulation}
       />
-      
-      {isRunning && (
-        <button className="settings-btn" onClick={handleSettings}>
-          <Settings size={20} />
-        </button>
-      )}
       
       {!isRunning && !showSetup && (
         <button className="skip-btn" onClick={() => handleStart({ fuel: 100, odometer: 0, efficiency: 48, useSimulation: false, forceLandscape: false, keepScreenOn: false })}>

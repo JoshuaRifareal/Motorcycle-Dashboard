@@ -4,19 +4,152 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background: #000000; /* Pure black */
+  background: #000000;
   overflow: hidden;
 }
 
+/* Top bar with toggles on left, settings on right */
+.top-bar {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.top-bar > * {
+  pointer-events: auto;
+}
+
+/* Left side - toggle group - NO BACKGROUND */
+.toggle-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Individual toggle buttons - glowing style */
+.toggle-icon {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: transparent;
+  color: rgb(39, 39, 39);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+}
+
+.toggle-icon svg {
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease;
+}
+
+.toggle-icon:hover {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Active state - Orange glow */
+.toggle-icon.active {
+  color: #ff6d00;
+  text-shadow: 0 0 20px rgba(255, 109, 0, 0.3);
+}
+
+.toggle-icon.active svg {
+  filter: drop-shadow(0 0 20px rgba(255, 109, 0, 0.4)) 
+          drop-shadow(0 0 40px rgba(255, 109, 0, 0.2));
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* LED indicator - orange glow dot */
+.led-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.toggle-icon.active .led-indicator {
+  background: #ff6d00;
+  box-shadow: 0 0 15px rgba(255, 109, 0, 0.6),
+              0 0 30px rgba(255, 109, 0, 0.3);
+  animation: ledPulse 2s ease-in-out infinite;
+}
+
+/* Glow pulse animation */
+@keyframes glowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px rgba(255, 109, 0, 0.4)) 
+            drop-shadow(0 0 40px rgba(255, 109, 0, 0.2));
+  }
+  50% {
+    filter: drop-shadow(0 0 30px rgba(255, 109, 0, 0.6)) 
+            drop-shadow(0 0 60px rgba(255, 109, 0, 0.3));
+  }
+}
+
+@keyframes ledPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 109, 0, 0.6),
+                0 0 30px rgba(255, 109, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 109, 0, 0.8),
+                0 0 50px rgba(255, 109, 0, 0.4);
+  }
+}
+
+/* Settings button - matching glow style */
+.settings-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.settings-btn svg {
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease;
+}
+
+.settings-btn:hover {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.settings-btn:active {
+  transform: scale(0.92);
+}
+
+/* Skip button - match theme */
 .skip-btn {
   position: absolute;
-  top: 16px;
+  top: 20px;
   right: 20px;
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(8px);
+  background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #b0b0ff;
-  padding: 10px 24px;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 12px 28px;
   border-radius: 30px;
   font-size: 14px;
   font-weight: 600;
@@ -24,58 +157,84 @@
   cursor: pointer;
   z-index: 20;
   transition: all 0.3s ease;
-  box-shadow: 0 0 30px rgba(100, 80, 255, 0.08);
+}
+
+.skip-btn:hover {
+  color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .skip-btn:active {
   transform: scale(0.92);
-  background: rgba(255, 255, 255, 0.12);
 }
 
-.settings-btn {
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #b0b0ff;
-  padding: 10px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 20;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 30px rgba(100, 80, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-}
-
-.settings-btn:active {
-  transform: scale(0.92);
-  background: rgba(255, 255, 255, 0.12);
-}
-
+/* Responsive */
 @media (orientation: landscape) and (max-height: 500px) {
-  .skip-btn {
-    top: 8px;
+  .top-bar {
+    top: 12px;
+    left: 12px;
     right: 12px;
-    padding: 6px 16px;
-    font-size: 11px;
+  }
+  
+  .toggle-group {
+    gap: 24px;
+  }
+  
+  .toggle-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .toggle-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .led-indicator {
+    width: 6px;
+    height: 6px;
   }
   
   .settings-btn {
-    top: 8px;
-    right: 12px;
     width: 36px;
     height: 36px;
-    padding: 8px;
   }
   
   .settings-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 36px;
+    height: 36px;
+  }
+  
+  .skip-btn {
+    top: 12px;
+    right: 12px;
+    padding: 8px 20px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 400px) {
+  .toggle-group {
+    gap: 6px;
+  }
+  
+  .toggle-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .toggle-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .settings-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .settings-btn svg {
+    width: 20px;
+    height: 20px;
   }
 }
