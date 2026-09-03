@@ -2,8 +2,6 @@
 
 A modern, responsive speedometer PWA built with React, Vite, and SVG. Features GPS tracking, fuel consumption calculation, and a cyberpunk neon aesthetic.
 
-![Try here](https://motorcycle-dashboard-eta.vercel.app/)
-
 ## Features
 
 - 🚀 **Real-time Speed Tracking** - GPS-based speed detection

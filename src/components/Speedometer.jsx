@@ -3,7 +3,7 @@ import SpeedometerCanvas from './SpeedometerCanvas';
 import useGPS from '../hooks/useGPS';
 import useSpeedSimulator from '../hooks/useSpeedSimulator';
 
-function Speedometer({ isRunning, fuel: initialFuel, startOdometer, efficiency, showStartupAnim }) {
+function Speedometer({ isRunning, fuel: initialFuel, startOdometer, efficiency, showStartupAnim, useSimulation }) {
   const [speed, setSpeed] = useState(0);
   const [targetSpeed, setTargetSpeed] = useState(0);
   const [currentFuel, setCurrentFuel] = useState(initialFuel);
@@ -15,8 +15,10 @@ function Speedometer({ isRunning, fuel: initialFuel, startOdometer, efficiency, 
 
   const lastUpdateRef = useRef(Date.now());
   const startupAnimRef = useRef(null);
-  const gpsSpeed = useGPS(isRunning);
-  const simulatedSpeed = useSpeedSimulator(isRunning && !gpsReady);
+  
+  // Always use GPS, but simulation can override
+  const gpsSpeed = useGPS(isRunning && !useSimulation);
+  const simulatedSpeed = useSpeedSimulator(isRunning && useSimulation);
 
   // Reset state when running starts
   useEffect(() => {
@@ -26,6 +28,9 @@ function Speedometer({ isRunning, fuel: initialFuel, startOdometer, efficiency, 
       setTotalDistance(0);
       setFuelUsed(0);
       setGpsReady(false);
+      setStartupComplete(false);
+      setSpeed(0);
+      setTargetSpeed(0);
     }
   }, [isRunning, initialFuel, startOdometer]);
 
@@ -38,13 +43,14 @@ function Speedometer({ isRunning, fuel: initialFuel, startOdometer, efficiency, 
   useEffect(() => {
     if (!isRunning || !startupComplete) return;
 
-    const currentSpeed = gpsReady ? gpsSpeed : simulatedSpeed;
+    // Use GPS if available and not in simulation mode
+    const currentSpeed = useSimulation ? simulatedSpeed : gpsSpeed;
     setTargetSpeed(Math.min(currentSpeed, 100));
 
     const now = Date.now();
     const dt = (now - lastUpdateRef.current) / 3600000;
     
-    if (targetSpeed > 0.5 && gpsReady) {
+    if (targetSpeed > 0.5 && (gpsReady || useSimulation)) {
       const dist = targetSpeed * dt;
       setTotalDistance(prev => prev + dist);
       const newOdometer = startOdometer + totalDistance + dist;
@@ -58,7 +64,7 @@ function Speedometer({ isRunning, fuel: initialFuel, startOdometer, efficiency, 
     }
     
     lastUpdateRef.current = now;
-  }, [isRunning, gpsSpeed, simulatedSpeed, gpsReady, targetSpeed, startOdometer, totalDistance, efficiency, initialFuel, startupComplete]);
+  }, [isRunning, gpsSpeed, simulatedSpeed, gpsReady, targetSpeed, startOdometer, totalDistance, efficiency, initialFuel, startupComplete, useSimulation]);
 
   useEffect(() => {
     if (!isRunning || !startupComplete) return;

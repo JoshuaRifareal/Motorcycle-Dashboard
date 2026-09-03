@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-import { Fuel, Gauge, Zap, X } from 'lucide-react';
+import { Fuel, Gauge, Zap, X, Satellite, RotateCcw, Monitor } from 'lucide-react';
 import './SetupPanel.css';
 
 function SetupPanel({ onStart, onClose, initialValues }) {
   const [fuel, setFuel] = useState(initialValues?.fuel || 100);
   const [odometer, setOdometer] = useState(initialValues?.odometer || 0);
   const [efficiency, setEfficiency] = useState(initialValues?.efficiency || 48);
+  const [useSimulation, setUseSimulation] = useState(initialValues?.useSimulation || false);
+  const [forceLandscape, setForceLandscape] = useState(initialValues?.forceLandscape || false);
+  const [keepScreenOn, setKeepScreenOn] = useState(initialValues?.keepScreenOn || false);
 
   const handleStart = () => {
     onStart({
       fuel: parseFloat(fuel),
       odometer: parseFloat(odometer),
-      efficiency: parseFloat(efficiency)
+      efficiency: parseFloat(efficiency),
+      useSimulation,
+      forceLandscape,
+      keepScreenOn
     });
   };
 
@@ -55,22 +61,22 @@ function SetupPanel({ onStart, onClose, initialValues }) {
             <div className="slider-header">
               <Gauge size={20} />
               <span>Start Odometer</span>
-              <span className="slider-value-display">{Math.round(odometer)} km</span>
+              <span className="slider-value-display">{Math.round(odometer).toLocaleString()} km</span>
             </div>
             <div className="slider-track">
               <input
                 type="range"
                 min="0"
-                max="500"
-                step="1"
+                max="100000"
+                step="100"
                 value={odometer}
                 onChange={(e) => setOdometer(parseFloat(e.target.value))}
                 className="slider ios-style"
                 style={{
                   background: `linear-gradient(to right, 
                     #6a5aff 0%, 
-                    #6a5aff ${(odometer / 500) * 100}%, 
-                    rgba(255,255,255,0.1) ${(odometer / 500) * 100}%, 
+                    #6a5aff ${(odometer / 100000) * 100}%, 
+                    rgba(255,255,255,0.1) ${(odometer / 100000) * 100}%, 
                     rgba(255,255,255,0.1) 100%)`
                 }}
               />
@@ -101,6 +107,39 @@ function SetupPanel({ onStart, onClose, initialValues }) {
                 }}
               />
             </div>
+          </div>
+        </div>
+
+        {/* Toggle Controls */}
+        <div className="toggles-container">
+          <div className="toggle-group">
+            <button 
+              className={`toggle-btn ${useSimulation ? 'active' : ''}`}
+              onClick={() => setUseSimulation(!useSimulation)}
+            >
+              <Satellite size={18} />
+              <span>{useSimulation ? 'Simulation' : 'GPS'}</span>
+            </button>
+          </div>
+
+          <div className="toggle-group">
+            <button 
+              className={`toggle-btn ${forceLandscape ? 'active' : ''}`}
+              onClick={() => setForceLandscape(!forceLandscape)}
+            >
+              <RotateCcw size={18} />
+              <span>Force Landscape</span>
+            </button>
+          </div>
+
+          <div className="toggle-group">
+            <button 
+              className={`toggle-btn ${keepScreenOn ? 'active' : ''}`}
+              onClick={() => setKeepScreenOn(!keepScreenOn)}
+            >
+              <Monitor size={18} />
+              <span>Screen Always On</span>
+            </button>
           </div>
         </div>
 

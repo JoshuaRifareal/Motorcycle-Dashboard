@@ -297,26 +297,26 @@ function SpeedometerCanvas({ speed, fuel, odometer, isRunning }) {
           }}
         />
 
-        {/* Fuel label with Lucide React icon */}
-        <g transform={`translate(${cx - 50}, ${cy - fuelRadius + fuelLineWidth + 30})`}>
-          <Fuel 
+        {/* Fuel label with Lucide React icon - centered alignment */}
+        <g transform={`translate(${cx - 55}, ${cy - fuelRadius + fuelLineWidth + 30})`}>
+        <Fuel 
             size={24} 
             color="#ffffff" 
             strokeWidth={2}
             style={{ filter: `drop-shadow(0 0 15px ${fuelColor}44)` }}
-          />
-          <text
-            x={36}
-            y={4}
+        />
+        <text
+            x={34}
+            y={0}
             fill={fuelColor}
             fontSize="22"
             fontWeight="600"
-            dominantBaseline="middle"
+            dominantBaseline="central"
             fontFamily="-apple-system, Segoe UI, sans-serif"
             style={{ filter: `drop-shadow(0 0 20px ${fuelColor}44)` }}
-          >
+        >
             {Math.round(fuel)}%
-          </text>
+        </text>
         </g>
 
         {/* Subtle outer glow ring */}
